@@ -48,12 +48,10 @@ public class AppConfig {
     public KStream<String,Quote> kStream(StreamsBuilder kStreamsBuilder){
 
         KStream<String,Quote> stream=kStreamsBuilder.stream(inputTopic);
-       stream.foreach((s, quote) ->
-               {
-                   System.out.println(s+"--"+quote);
+        stream.filter((s, quote) -> {
+            return quote.getCategories().contains("love");
+        }).to("love");
 
-               }
-               );
         return stream;
 
     }

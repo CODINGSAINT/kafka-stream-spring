@@ -4,8 +4,6 @@ import com.codingsaint.learning.kafkastreamspring.model.Quote;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.common.serialization.Deserializer;
 
-import java.io.ByteArrayInputStream;
-import java.io.ObjectInputStream;
 import java.util.Map;
 
 public class QuoteDeserializer implements Deserializer<Quote> {
@@ -15,9 +13,7 @@ public class QuoteDeserializer implements Deserializer<Quote> {
         ObjectMapper mapper = new ObjectMapper();
         Quote quote = null;
         try {
-            ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes));
-            quote= (Quote) in.readObject();
-            in.close();
+            quote = mapper.readValue(bytes, Quote.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
