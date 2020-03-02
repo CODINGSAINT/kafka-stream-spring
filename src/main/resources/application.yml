@@ -1,0 +1,29 @@
+spring:
+  kafka:
+    client-id : quoutes-app
+    bootstrap-server:
+      - localhost:9091
+      - localhost:9001
+      - localhost:9092
+    template:
+      default-topic: quotes
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: com.codingsaint.learning.kafkastreamspring.QuoteSerializer
+    consumer:
+      group-id: random-consumer
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: com.codingsaint.learning.kafkastreamspring.QuoteDeserializer
+---
+kafka:
+  topic:
+    input: quotes
+    life: life
+    love: love
+    funny: funny
+    art: art
+    students: students
+
+
+
