@@ -7,13 +7,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class KafkaConsumers {
-
-
-
     @KafkaListener(topics = {"love"})
     public void consume(Quote quote){
-
         System.out.println("Incoming Love "+quote);
-
     }
 }

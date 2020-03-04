@@ -1,13 +1,13 @@
 package com.codingsaint.learning.kafkastreamspring;
 
 import com.codingsaint.learning.kafkastreamspring.model.Quote;
-import com.codingsaint.learning.kafkastreamspring.model.QuoteSerde;
-import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.errors.LogAndContinueExceptionHandler;
 import org.apache.kafka.streams.kstream.KStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
@@ -17,6 +17,7 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.annotation.EnableKafkaStreams;
 import org.springframework.kafka.annotation.KafkaStreamsDefaultConfiguration;
 import org.springframework.kafka.config.KafkaStreamsConfiguration;
+import org.springframework.kafka.support.KafkaStreamBrancher;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +26,8 @@ import java.util.Map;
 @EnableKafka
 @EnableKafkaStreams
 public class AppConfig {
+    private static final Logger LOGGER= LoggerFactory.getLogger(AppConfig.class);
+
     @Value("${kafka.topic.input}")
     private String inputTopic;
 
@@ -46,12 +49,13 @@ public class AppConfig {
 
     @Bean
     public KStream<String,Quote> kStream(StreamsBuilder kStreamsBuilder){
-
         KStream<String,Quote> stream=kStreamsBuilder.stream(inputTopic);
-        stream.filter((s, quote) -> {
-            return quote.getCategories().contains("love");
-        }).to("love");
-
+        stream.foreach((s, quote) -> {
+            LOGGER.info("incoming quotes-> {}",quote);
+            quote.getTags().forEach(tag->{
+                stream.to(tag);
+            });
+        });
         return stream;
 
     }
