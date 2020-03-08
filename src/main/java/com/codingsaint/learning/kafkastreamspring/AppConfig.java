@@ -2,6 +2,7 @@ package com.codingsaint.learning.kafkastreamspring;
 
 import com.codingsaint.learning.kafkastreamspring.model.Quote;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.common.serialization.BytesDeserializer;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.streams.StreamsBuilder;
@@ -23,6 +24,7 @@ import org.springframework.kafka.config.KafkaStreamsConfiguration;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.KafkaStreamBrancher;
+import org.springframework.kafka.support.converter.StringJsonMessageConverter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,13 +57,12 @@ public class AppConfig {
     @Bean
     public KStream<String,Quote> kStream(StreamsBuilder kStreamsBuilder){
         KStream<String,Quote> stream=kStreamsBuilder.stream(inputTopic);
-        stream.foreach((s, quote) -> {
-            LOGGER.info("incoming quotes-> {}",quote);
-            quote.getTags().forEach(tag->{
-                //LOGGER.info("sending to -> {}",tag);
-                stream.to(tag);
-            });
-        });
+        String []allTopics={"business","education","faith",
+                "famous-quotes","friendship","future","happiness","inspirational","life",
+                "love","nature","politics","proverb","religion","science","success","technology"};
+        for(String topic:allTopics){
+            stream.filter((s, quote) -> quote.getTags().contains(topic)).to(topic);
+        }
         return stream;
 
     }
@@ -72,14 +73,11 @@ public class AppConfig {
                 ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
                 kafkaProperties.getBootstrapServers());
         props.put(
-                ConsumerConfig.GROUP_ID_CONFIG,
-                "random-consumer");
-        props.put(
                 ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
                 StringDeserializer.class);
         props.put(
                 ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
-                QuoteDeserializer.class);
+                BytesDeserializer.class);
         return new DefaultKafkaConsumerFactory<>(props);
     }
 
@@ -90,6 +88,7 @@ public class AppConfig {
         ConcurrentKafkaListenerContainerFactory<String, Quote> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
+        factory.setMessageConverter(new StringJsonMessageConverter());
         return factory;
     }
 }

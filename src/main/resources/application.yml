@@ -2,7 +2,7 @@ spring:
   kafka:
     listener:
       missing-topics-fatal: false
-    client-id : quoutes-app
+    client-id : quotes-app
     bootstrap-server:
       - localhost:9091
       - localhost:9001
