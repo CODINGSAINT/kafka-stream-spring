@@ -1,7 +1,9 @@
 package com.codingsaint.learning.kafkastreamspring;
 
 import com.codingsaint.learning.kafkastreamspring.model.Quote;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.errors.LogAndContinueExceptionHandler;
@@ -16,7 +18,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.annotation.EnableKafkaStreams;
 import org.springframework.kafka.annotation.KafkaStreamsDefaultConfiguration;
+import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.config.KafkaStreamsConfiguration;
+import org.springframework.kafka.core.ConsumerFactory;
+import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.KafkaStreamBrancher;
 
 import java.util.HashMap;
@@ -53,11 +58,38 @@ public class AppConfig {
         stream.foreach((s, quote) -> {
             LOGGER.info("incoming quotes-> {}",quote);
             quote.getTags().forEach(tag->{
+                //LOGGER.info("sending to -> {}",tag);
                 stream.to(tag);
             });
         });
         return stream;
 
     }
+    @Bean
+    public ConsumerFactory<String, Quote> consumerFactory() {
+        Map<String, Object> props = new HashMap<>();
+        props.put(
+                ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
+                kafkaProperties.getBootstrapServers());
+        props.put(
+                ConsumerConfig.GROUP_ID_CONFIG,
+                "random-consumer");
+        props.put(
+                ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
+                StringDeserializer.class);
+        props.put(
+                ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
+                QuoteDeserializer.class);
+        return new DefaultKafkaConsumerFactory<>(props);
+    }
 
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, Quote>
+    kafkaListenerContainerFactory() {
+
+        ConcurrentKafkaListenerContainerFactory<String, Quote> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory());
+        return factory;
+    }
 }

@@ -1,5 +1,7 @@
 spring:
   kafka:
+    listener:
+      missing-topics-fatal: false
     client-id : quoutes-app
     bootstrap-server:
       - localhost:9091
@@ -11,6 +13,10 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: com.codingsaint.learning.kafkastreamspring.QuoteSerializer
     consumer:
+      properties:
+        partition:
+          assignment:
+            strategy: org.apache.kafka.clients.consumer.RoundRobinAssignor
       group-id: random-consumer
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
@@ -24,3 +30,4 @@ kafka:
     funny: funny
     art: art
     students: students
+    future: future
