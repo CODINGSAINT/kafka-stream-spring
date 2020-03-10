@@ -23,10 +23,10 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.config.KafkaStreamsConfiguration;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.support.KafkaStreamBrancher;
 import org.springframework.kafka.support.converter.StringJsonMessageConverter;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Configuration
@@ -38,11 +38,18 @@ public class AppConfig {
     @Value("${kafka.topic.input}")
     private String inputTopic;
 
-    @Value("${kafka.topic.life}")
-    private String lifeTopic;
+    @Value("#{'${kafka.topic.output}'.split(',')}")
+    private List<String> allTopics;
+
 
     @Autowired
     private KafkaProperties kafkaProperties;
+
+    /**
+     * Configurations for KafkaStreams
+     * @param kafkaProperties Will take defaults from application YAML or Properties file with spring.kafka
+     * @return kafkaConfiguration
+     */
     @Bean(name= KafkaStreamsDefaultConfiguration.DEFAULT_STREAMS_CONFIG_BEAN_NAME)
     public KafkaStreamsConfiguration kafkaConfiguration(final KafkaProperties kafkaProperties){
         Map<String, Object> config = new HashMap<>();
@@ -54,18 +61,25 @@ public class AppConfig {
         return new KafkaStreamsConfiguration(config);
     }
 
+    /**
+     * The Stream which delegates each incoming topic to respective destination topic
+     * @param kStreamsBuilder
+     * @return
+     */
     @Bean
     public KStream<String,Quote> kStream(StreamsBuilder kStreamsBuilder){
         KStream<String,Quote> stream=kStreamsBuilder.stream(inputTopic);
-        String []allTopics={"business","education","faith",
-                "famous-quotes","friendship","future","happiness","inspirational","life",
-                "love","nature","politics","proverb","religion","science","success","technology"};
         for(String topic:allTopics){
             stream.filter((s, quote) -> quote.getTags().contains(topic)).to(topic);
         }
         return stream;
 
     }
+
+    /**
+     * Kafka ConsumerFactory configurations
+     * @return
+     */
     @Bean
     public ConsumerFactory<String, Quote> consumerFactory() {
         Map<String, Object> props = new HashMap<>();
@@ -81,6 +95,10 @@ public class AppConfig {
         return new DefaultKafkaConsumerFactory<>(props);
     }
 
+    /**
+     * Required Configuration for POJO to JSON
+     * @return ConcurrentKafkaListenerContainerFactory
+     */
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, Quote>
     kafkaListenerContainerFactory() {

@@ -25,9 +25,4 @@ spring:
 kafka:
   topic:
     input: quotes
-    life: life
-    love: love
-    funny: funny
-    art: art
-    students: students
-    future: future
+    output: business,education,faith,famous-quotes,friendship,future,happiness,inspirational,life,love,nature,politics,proverb,religion,science,success,technology

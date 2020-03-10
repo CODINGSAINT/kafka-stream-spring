@@ -17,4 +17,5 @@ public class QuotesController {
     public Quote produce(){
         return quotesProducer.quotes();
     }
+
 }

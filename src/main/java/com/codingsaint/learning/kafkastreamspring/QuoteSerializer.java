@@ -17,6 +17,4 @@ public class QuoteSerializer implements Serializer<Quote> {
         }
         return retVal;
     }
-
-
 }
