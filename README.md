@@ -80,7 +80,10 @@ Now whatever you key in to producer window will be consumed to consumer window
   
   
 ## Creating Spring Boot Kafka Stream project 
-We will create project using https://start.spring.io . Go to website and dependencies ![Spring Boot Kafka Stream dependencies](https://photos.google.com/u/1/album/AF1QipNTpi7Vn95Ont9CiV1MQtHDJ6c4LVHiC8HIFiVn/photo/AF1QipNGWd_8OcAeaXRUAjrvPVU5ecrdaA98_vHBM10v)    
+We will create project using https://start.spring.io . 
+Go to website and dependencies
+ 
+ ![Spring Boot Kafka Stream dependencies](https://lh3.googleusercontent.com/_X8RJU5IQE1LUUONCukFpCfnANN6HmH3gsVnzirWd74nmWCNluCtMx66uekRE9I1cdYU28jgDjXdbtBNLCOfUMHdxjlZLoIa6gHn5d2pMDjqRJPN9ep4TK9bHdoFaO53M-X5VffpbYz6u1GXh2sLiAmkzAvXvIfs7-to1buqdwascl3WNQzkZ023ygtUVM6avXqr_hXJM9REiOteI-RYIFN-e4XVT9ghfqJBfrEGv7KtARU7NH_EVt2-Lrb8JzeLRGn_2wyaySSC-Anbv11PhW34obCiUE_ws90pCq48v9N6N0upNnYU_PEtW193dXJX3cZLVjmfMrpr9yc8YT_0x6HqNK6qJfoylhoc91hwgJqeecoDCHNRLI2C2mAVOZpunkAJQO_JcibsCLkUlMoahWF41TrJE3j6DPsd-yOHesel-dK_Ngc2Xt5IZu8coWWdZM_BGfWTxMm5e8MIZrDq74AJOEvzFhDeByFH4cOOdqkSooi1-Jqgh_fIumaags3NMNYjtTKAEeRjFVr_Gaa6l37qr8Iaepm8rIRfVlBz3A-HXqOa5KCJ5JAtf8cqc8yOgQlkYC6arT4GsmUsSjOjlxp5e86k65B1z1kDK79Ct4jQBj5DdPNiuL5HnxLZ0EIkGSwqK5EEPEob8ObLeH0noyiBd_5reWwqFMqCPdTX_MVu2DJLXsoha8bpkLqTOxoYsWLmTA3gy80kFV6CcB-9S-uWuabrvL1HK-wIJSUDzipkrgTh=w1190-h669-no)    
     
 Download the project and open in your favourite IDE and open it.
 Now we have Kafka installed up and running , as a First step we should be creating Quote bean which will flow the quotes from producer to consumer.
