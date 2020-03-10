@@ -1,6 +1,6 @@
 Kafka is most sought after event system today. In this series we will look at Kafka event messaging and streaming.    
 
-#Kafka Stream with Custom Objects 
+# Kafka Stream with Custom Objects 
 
  
 Github Repository link : https://github.com/CODINGSAINT/kafka-stream-spring
